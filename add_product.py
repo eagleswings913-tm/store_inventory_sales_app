@@ -1,7 +1,7 @@
 import csv
 
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QComboBox, QLabel, QInputDialog, QMessageBox, \
-    QLineEdit
+    QLineEdit, QPushButton
 
     # Read items from text file and return items to populate dropdown
 def load_dropdown_items(field_name):
@@ -101,6 +101,11 @@ class MyWindow(QWidget):
 
         # self.update_field_visibility("")
 
+        # Submit button
+        self.submit_button = QPushButton("Submit")
+        self.submit_button.clicked.connect(self.handle_submit)
+        layout.addWidget(self.submit_button)
+
         self.setLayout(layout)
         self.setWindowTitle("Dynamic Form")
         # self.resize(300, 200)
@@ -163,3 +168,10 @@ class MyWindow(QWidget):
             return ""
         else:
             return ""
+
+    def handle_submit(self):
+        category = self.category_dropdown.currentText()
+        category_index = self.category_index.text()
+
+        # Process the form data
+        QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}")
