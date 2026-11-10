@@ -103,29 +103,134 @@ class MyWindow(QMainWindow):
         self.form_layout.setRowVisible(self.item_num, False)
 
         # Brand Name (yarn)     DD
-        # Product Name
+        self.brand_name_label = QLabel("Brand Name")
+        self.brand_name_dropdown = QComboBox()
+        self.brand_name_dropdown.setObjectName("brand_name_dropdown")
+        self.load_dropdown("brand_name")
+        self.form_layout.addRow(self.brand_name_label, self.brand_name_dropdown)
+
+        self.brand_name_index = QLineEdit()
+        self.brand_name_index.setObjectName("brand_name_index")
+        self.form_layout.addRow(self.brand_name_index)
+        self.brand_name_index.setVisible(False)
+
+        # Product Name          DD
+        self.product_name_label = QLabel("Product Name")
+        self.product_name_dropdown = QComboBox()
+        self.product_name_dropdown.setObjectName("product_name_dropdown")
+        self.load_dropdown("product_name")
+        self.form_layout.addRow(self.product_name_label, self.product_name_dropdown)
+
+        self.product_name_index = QLineEdit()
+        self.product_name_index.setObjectName("product_name_index")
+        self.form_layout.addRow(self.product_name_index)
+        self.product_name_index.setVisible(False)
+
         # Discount (yarn)       Boolean
+        self.discount_label = QLabel("Discount?")
+        self.discount_dropdown = QComboBox()
+        self.discount_dropdown.setObjectName("discount_dropdown")
+        self.discount_dropdown.addItems(["True", "False"])
+        self.discount_dropdown.setPlaceholderText("")
+        self.discount_dropdown.setCurrentIndex(-1)
+        self.form_layout.addRow(self.discount_label, self.discount_dropdown)
+
         # Taxable (yarn)        Boolean
+        self.taxable_label = QLabel("Taxable?")
+        self.taxable_dropdown = QComboBox()
+        self.taxable_dropdown.setObjectName("taxable_dropdown")
+        self.taxable_dropdown.addItems(["True", "False"])
+        self.taxable_dropdown.setPlaceholderText("") # dropdown initially is empty
+        self.taxable_dropdown.setCurrentIndex(-1)
+        self.form_layout.addRow(self.taxable_label, self.taxable_dropdown)
+
         # Sold By (yarn)        DD
+        self.sold_by_label = QLabel("Sold By")
+        self.sold_by_dropdown = QComboBox()
+        self.sold_by_dropdown.setObjectName("sold_by_dropdown")
+        self.sold_by_dropdown.addItems(["Each", "Weight"])
+        self.sold_by_dropdown.setPlaceholderText("")  # dropdown initially is empty
+        self.sold_by_dropdown.setCurrentIndex(-1)
+        self.form_layout.addRow(self.sold_by_label, self.sold_by_dropdown)
 
         # Unit (yarn - each)    DD
-        # Weight of Unit (yarn - each)    DD?
+        self.unit_label = QLabel("Unit")
+        self.unit_dropdown = QComboBox()
+        self.unit_dropdown.setObjectName("unit_dropdown")
+        self.load_dropdown("unit")
+        self.form_layout.addRow(self.unit_label, self.unit_dropdown)
+
+        self.unit_index = QLineEdit()
+        self.unit_index.setObjectName("unit_index")
+        self.form_layout.addRow(self.unit_index)
+        self.unit_index.setVisible(False)
+
+        # Weight of Unit (yarn - each)
+        self.weight_per_unit_label = QLabel("Weight Per Unit")
+        self.weight_per_unit = QLineEdit()
+        self.weight_per_unit.setObjectName("weight_per_unit")
+        self.form_layout.addRow(self.weight_per_unit_label, self.weight_per_unit)
+
         #  Line (yarn - each - weight)
+        self.yarn_line_label = QLabel("Yarn Line")
+        self.yarn_line = QLineEdit()
+        self.yarn_line.setObjectName("yarn_line")
+        self.form_layout.addRow(self.yarn_line_label, self.yarn_line)
+
         # Yarn Size (yarn - each - weight)      DD
+        self.yarn_size_label = QLabel("Yarn Size")
+        self.yarn_size_dropdown = QComboBox()
+        self.yarn_size_dropdown.setObjectName("yarn_size_dropdown")
+        self.load_dropdown("yarn_size")
+        self.form_layout.addRow(self.yarn_size_label, self.yarn_size_dropdown)
+
+        self.yarn_size_index = QLineEdit()
+        self.yarn_size_index.setObjectName("yarn_size_index")
+        self.form_layout.addRow(self.yarn_size_index)
+        self.yarn_size_index.setVisible(False)
+
         # Type (yarn - each - weight)
+        self.type_label = QLabel("Yarn Type (mercanized, perle, etc")
+        self.type = QLineEdit()
+        self.type.setObjectName("type")
+        self.form_layout.addRow(self.type_label, self.type)
+
         # Fiber Type (yarn - each - weight)     DD
+        self.fiber_type_label = QLabel("Fiber Type")
+        self.fiber_type_dropdown = QComboBox()
+        self.fiber_type_dropdown.setObjectName("fiber_type_dropdown")
+        self.load_dropdown("fiber_type")
+        self.form_layout.addRow(self.fiber_type_label, self.fiber_type_dropdown)
+
+        self.fiber_type_index = QLineEdit()
+        self.fiber_type_index.setObjectName("fiber_type_index")
+        self.form_layout.addRow(self.fiber_type_index)
+        self.fiber_type_index.setVisible(False)
+
         # Color Number (yarn - each - weight)
+        self.color_num_label = QLabel("Color Number")
+        self.color_num = QLineEdit()
+        self.color_num.setObjectName("color_num")
+        self.form_layout.addRow(self.color_num_label, self.color_num)
+
         # Color (yarn - each - weight)
+        self.color_label = QLabel("Yarn Color")
+        self.color_dropdown = QComboBox()
+        self.color_dropdown.setObjectName("color_dropdown")
+        self.load_dropdown("color")
+        self.form_layout.addRow(self.color_label, self.color_dropdown)
 
-        # self.dev_label = QLabel("Preferred Programming Language:")
-        # self.dev_input = QLineEdit()
-        # layout.addWidget(self.dev_label)
-        # layout.addWidget(self.dev_input)
-
-        # self.update_field_visibility("")
+        self.color_index = QLineEdit()
+        self.color_index.setObjectName("color_index")
+        self.form_layout.addRow(self.color_index)
+        self.color_index.setVisible(False)
 
         self.main_layout.addLayout(self.form_layout)
         self.main_layout.addStretch()
+
+        # End of Form Layout
+
+        # Begin Button Layout
 
         button_layout = QHBoxLayout()
             # Submit button
@@ -141,6 +246,8 @@ class MyWindow(QMainWindow):
         button_layout.addWidget(self.cancel_button)
 
         self.main_layout.addLayout(button_layout)
+
+        # End Button Layout
 
         self.setWindowTitle("Dynamic Form")
         # self.resize(300, 200)
@@ -195,11 +302,15 @@ class MyWindow(QMainWindow):
                     self.form_layout.setRowVisible(self.barcode, True)
                     self.activateWindow()
                     self.barcode.setFocus()
+                else:
+                    list_name = "barcode"
             if list_name == "barcode":
                 if self.question_box("Does the product have a item number? (y or n) "):
                     self.form_layout.setRowVisible(self.item_num, True)
                     self.activateWindow()
                     self.item_num.setFocus()
+                else:
+                    list_name = "item_num"
 
     def show_input_box(self,input_label):
         text, ok = QInputDialog.getText(
