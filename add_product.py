@@ -72,7 +72,6 @@ class MyWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
         self.main_layout = QVBoxLayout(self.central_widget)
         self.main_layout.setContentsMargins(40,20,40,20)
-        # main_layout.setSpacing(20)
         self.form_layout = QFormLayout()
         self.form_layout.setContentsMargins(0,20,0,20)
 
@@ -86,10 +85,23 @@ class MyWindow(QMainWindow):
         self.category_index = QLineEdit()
         self.category_index.setObjectName("category_index")
         self.form_layout.addRow(self.category_index)
-        # self.category_index.setVisible(False)
+        self.category_index.setVisible(False)
+
+        # Barcode                 (unique)
+        self.barcode_label = QLabel("Barcode")
+        self.barcode = QLineEdit()
+        self.barcode.setObjectName("barcode")
+        self.form_layout.addRow(self.barcode_label, self.barcode)
+        self.barcode.returnPressed.connect(lambda w=self.barcode: self.on_change(w.text(),"barcode"))
+        self.form_layout.setRowVisible(self.barcode, False)
 
         # Item Number (yarn)      Brand Name + Item Number (unique)
-        # Barcode                 (unique)
+        self.item_num_label = QLabel("Item Number")
+        self.item_num = QLineEdit()
+        self.item_num.setObjectName("barcode")
+        self.form_layout.addRow(self.item_num_label, self.item_num)
+        self.form_layout.setRowVisible(self.item_num, False)
+
         # Brand Name (yarn)     DD
         # Product Name
         # Discount (yarn)       Boolean
@@ -153,7 +165,9 @@ class MyWindow(QMainWindow):
 
         # executes when text changes in a dropdown widget
     def on_change(self, selected_text, widget_name):
+        # print(selected_text, widget_name)
         list_name = widget_name.rsplit('_',1)[0].lower()            # extract fieldname from widget name
+        # print(f"list name = {list_name}")
         if "Add new" in selected_text:                              # add new item to dropdown list
             list_name = selected_text.split()[-1].lower()           # extract field name from selected text
             new_item = self.show_input_box(f"Add new {list_name}")  # ask user for the name of the new dropdown item
@@ -176,6 +190,16 @@ class MyWindow(QMainWindow):
             if list_name in ['brand_name','category','color','fiber_type','product_name','unit','yarn_size']:
                 index = retrieve_index_of_choice(list_name, selected_text)      # return index for item if one of these widgets
                 getattr(self, list_name + '_index').setText(index)              # set index as value for hidden widget field
+            if list_name == "category":
+                if self.question_box("Does the product have a barcode? (y or n) "):
+                    self.form_layout.setRowVisible(self.barcode, True)
+                    self.activateWindow()
+                    self.barcode.setFocus()
+            if list_name == "barcode":
+                if self.question_box("Does the product have a item number? (y or n) "):
+                    self.form_layout.setRowVisible(self.item_num, True)
+                    self.activateWindow()
+                    self.item_num.setFocus()
 
     def show_input_box(self,input_label):
         text, ok = QInputDialog.getText(
@@ -192,12 +216,21 @@ class MyWindow(QMainWindow):
         else:
             return ""
 
+    def question_box(self,question_label):
+        reply = QMessageBox.question(self, "Question Box", question_label,QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.Yes:
+            return True
+        else:
+            return False
+
     def handle_submit(self):
         category = self.category_dropdown.currentText()
         category_index = self.category_index.text()
+        barcode = self.barcode.text()
+        item_num = self.item_num.text()
 
         # Process the form data
-        QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}")
+        QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}\nbarcode {barcode}\nitem number {item_num}")
 
     def handle_reset(self):
         for i in range(self.form_layout.count()):
