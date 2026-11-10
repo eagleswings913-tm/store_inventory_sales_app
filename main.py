@@ -25,7 +25,6 @@ class MainWindow(QWidget):
         self.setWindowTitle("Dynamic Form")
 
     def show_add_product(self):
-        print("add product")
         w = MyWindow()
         w.show()
 

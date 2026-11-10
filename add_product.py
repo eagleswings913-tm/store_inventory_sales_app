@@ -1,9 +1,10 @@
 import csv
 
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QComboBox, QLabel, QInputDialog, QMessageBox, \
-    QLineEdit, QPushButton
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QComboBox, QLabel, QInputDialog, QMessageBox, \
+    QLineEdit, QPushButton, QFormLayout, QMainWindow, QHBoxLayout
 
-    # Read items from text file and return items to populate dropdown
+
+# Read items from text file and return items to populate dropdown
 def load_dropdown_items(field_name):
     try:
         with open(f"drop_down_lists/{field_name}.csv", "r", encoding="utf-8") as csv_file:
@@ -58,25 +59,35 @@ def retrieve_index_of_choice(field_name, item):
         for line in csv_reader:
             if item == line[0]:
                 return line[1]
+        return "error"
 
 
-class MyWindow(QWidget):
+class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.init_ui()
 
     def init_ui(self):
-        layout = QVBoxLayout()
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
+        self.main_layout = QVBoxLayout(self.central_widget)
+        self.main_layout.setContentsMargins(40,20,40,20)
+        # main_layout.setSpacing(20)
+        self.form_layout = QFormLayout()
+        self.form_layout.setContentsMargins(0,20,0,20)
 
             # product category - category_dropdown
-        self.label = QLabel("Product Category")
+        self.category_label = QLabel("Product Category")
         self.category_dropdown = QComboBox()
+        self.category_dropdown.setObjectName("category_dropdown")
         self.load_dropdown("category")
+        self.form_layout.addRow(self.category_label, self.category_dropdown)
+
         self.category_index = QLineEdit()
-        self.category_index.setVisible(False)
-        layout.addWidget(self.label)
-        layout.addWidget(self.category_dropdown)
-        layout.addWidget(self.category_index)
+        self.category_index.setObjectName("category_index")
+        self.form_layout.addRow(self.category_index)
+        # self.category_index.setVisible(False)
+
         # Item Number (yarn)      Brand Name + Item Number (unique)
         # Barcode                 (unique)
         # Brand Name (yarn)     DD
@@ -101,12 +112,24 @@ class MyWindow(QWidget):
 
         # self.update_field_visibility("")
 
-        # Submit button
+        self.main_layout.addLayout(self.form_layout)
+        self.main_layout.addStretch()
+
+        button_layout = QHBoxLayout()
+            # Submit button
         self.submit_button = QPushButton("Submit")
         self.submit_button.clicked.connect(self.handle_submit)
-        layout.addWidget(self.submit_button)
+        self.reset_button = QPushButton("Reset")
+        self.reset_button.clicked.connect(self.handle_reset)
+        self.cancel_button = QPushButton("Cancel")
+        self.cancel_button.clicked.connect(self.handle_cancel)
 
-        self.setLayout(layout)
+        button_layout.addWidget(self.submit_button)
+        button_layout.addWidget(self.reset_button)
+        button_layout.addWidget(self.cancel_button)
+
+        self.main_layout.addLayout(button_layout)
+
         self.setWindowTitle("Dynamic Form")
         # self.resize(300, 200)
 
@@ -175,3 +198,27 @@ class MyWindow(QWidget):
 
         # Process the form data
         QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}")
+
+    def handle_reset(self):
+        for i in range(self.form_layout.count()):
+            item = self.form_layout.itemAt(i)
+            if item is not None:
+                widget = item.widget()
+                if widget is not None:
+                    # print(widget.objectName())
+                    widget_name = widget.objectName()
+                    if isinstance(widget, QComboBox):
+                        getattr(self, widget_name).setPlaceholderText("")  # dropdown initially is empty
+                        getattr(self, widget_name).setCurrentIndex(-1)
+                    elif isinstance(widget, QLineEdit):
+                        getattr(self, widget_name).setText("")
+
+        QMessageBox.information(self, "Reset", f"Reset the form")
+
+
+    def handle_cancel(self):
+        QMessageBox.information(self, "Cancel", f"Canceled, Return to main window")
+        self.close()
+
+    def closeEvent(self, event):
+        event.accept()
