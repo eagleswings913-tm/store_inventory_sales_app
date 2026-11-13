@@ -1,21 +1,21 @@
-import ctypes
 from datetime import date
 
-from PySide6.QtCore import Qt, QTimer, QTime
-from PySide6.QtGui import QPixmap, QCursor, QGuiApplication, QFont
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, \
     QGridLayout, QSizePolicy
 import sys
 
-from add_product import MyWindow
 from time_helps import DigitalClock
+from window_functions import set_title_bar_color, center_on_cursor_screen
+from button_click_functions import show_add_product, edit_product, view_product, add_inventory, edit_inventory, view_inventory, add_sale, edit_sale, view_sale, reports
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("A Place to Weave")
-        self.set_title_bar_color(0xDC9570)     #7095DC
-        self.center_on_cursor_screen()
+        set_title_bar_color(self, 0xDC9570)     #7095DC
+        center_on_cursor_screen(self)
         self.setFixedSize(1200, 800)
         self.setStyleSheet("background-color: white")
         self._first_show = True
@@ -24,7 +24,7 @@ class MainWindow(QWidget):
     def showEvent(self, event):
         super().showEvent(event)
         if self._first_show:
-            self.center_on_cursor_screen()
+            center_on_cursor_screen(self)
             self._first_show = False
 
     def init_ui(self):
@@ -150,6 +150,7 @@ class MainWindow(QWidget):
         product_edit_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         product_edit_btn.setStyleSheet("color: #7095DC;")
         product_edit_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        product_edit_btn.clicked.connect(edit_product)
         product_grid.addWidget(product_edit_btn, 2, 0)
         product_grid.setRowStretch(2, 1)
 
@@ -157,6 +158,7 @@ class MainWindow(QWidget):
         product_view_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         product_view_btn.setStyleSheet("color: #7095DC;")
         product_view_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        product_view_btn.clicked.connect(view_product)
         product_grid.addWidget(product_view_btn, 3, 0)
         product_grid.setRowStretch(3, 1)
 
@@ -184,7 +186,7 @@ class MainWindow(QWidget):
         inventory_add_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         inventory_add_btn.setStyleSheet("color: #7095DC;")
         inventory_add_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        inventory_add_btn.clicked.connect(show_add_product)
+        inventory_add_btn.clicked.connect(add_inventory)
         inventory_grid.addWidget(inventory_add_btn, 1, 0)
         inventory_grid.setRowStretch(1, 1)
 
@@ -192,6 +194,7 @@ class MainWindow(QWidget):
         inventory_edit_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         inventory_edit_btn.setStyleSheet("color: #7095DC;")
         inventory_edit_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        inventory_edit_btn.clicked.connect(edit_inventory)
         inventory_grid.addWidget(inventory_edit_btn, 2, 0)
         inventory_grid.setRowStretch(2, 1)
 
@@ -199,6 +202,7 @@ class MainWindow(QWidget):
         inventory_view_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         inventory_view_btn.setStyleSheet("color: #7095DC;")
         inventory_view_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        inventory_view_btn.clicked.connect(view_inventory)
         inventory_grid.addWidget(inventory_view_btn, 3, 0)
         inventory_grid.setRowStretch(3, 1)
 
@@ -226,7 +230,7 @@ class MainWindow(QWidget):
         sales_add_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         sales_add_btn.setStyleSheet("color: #7095DC;")
         sales_add_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sales_add_btn.clicked.connect(show_add_product)
+        sales_add_btn.clicked.connect(add_sale)
         sales_grid.addWidget(sales_add_btn, 1, 0)
         sales_grid.setRowStretch(1, 1)
 
@@ -234,6 +238,7 @@ class MainWindow(QWidget):
         sales_edit_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         sales_edit_btn.setStyleSheet("color: #7095DC;")
         sales_edit_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sales_edit_btn.clicked.connect(edit_sale)
         sales_grid.addWidget(sales_edit_btn, 2, 0)
         sales_grid.setRowStretch(2, 1)
 
@@ -241,6 +246,7 @@ class MainWindow(QWidget):
         sales_view_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         sales_view_btn.setStyleSheet("color: #7095DC;")
         sales_view_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sales_view_btn.clicked.connect(view_sale)
         sales_grid.addWidget(sales_view_btn, 3, 0)
         sales_grid.setRowStretch(3, 1)
 
@@ -268,6 +274,7 @@ class MainWindow(QWidget):
         reports_view_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         reports_view_btn.setStyleSheet("color: #7095DC;")
         reports_view_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        reports_view_btn.clicked.connect(reports)
         reports_grid.addWidget(reports_view_btn, 1, 0)
         reports_grid.setRowStretch(1, 1)
 
@@ -283,44 +290,6 @@ class MainWindow(QWidget):
         #                     f"Widget at ({row}, {col}) -> Width: {size.width()}, Height:"
         #                     f" {size.height()}"
         #                 )
-
-    def center_on_cursor_screen(self):
-        # Find the screen where the mouse cursor is currently located
-        cursor_pos = QCursor.pos()
-        target_screen = QGuiApplication.screenAt(cursor_pos)
-
-        # Fallback to the primary screen if the cursor position isn't detected
-        if target_screen is None:
-            target_screen = QGuiApplication.primaryScreen()
-
-        # Calculate and apply the center position
-        available_geometry = target_screen.availableGeometry()
-        frame_geometry = self.frameGeometry()
-        center_point = available_geometry.center()
-        frame_geometry.moveCenter(center_point)
-        self.move(frame_geometry.topLeft())
-        # screen_center = target_screen.availableGeometry().center()
-        # window_rect = self.frameGeometry()
-        # window_rect.moveCenter(screen_center)
-        # self.move(window_rect.topLeft())
-
-    def set_title_bar_color(self, bgr_color: int):
-        if sys.platform == "win32":
-            hwnd = int(self.winId())
-            # DWMWA_CAPTION_COLOR = 35 (Windows 11 Build 22000+)
-            dwmwa_caption_color = 35
-            color = ctypes.c_int(bgr_color)
-            # type: ignore
-            ctypes.windll.dwmapi.DwmSetWindowAttribute(                      # type: ignore[attr-defined]
-                hwnd,
-                dwmwa_caption_color,
-                ctypes.byref(color),
-                ctypes.sizeof(color)
-            )
-    # @staticmethod
-def show_add_product():
-    w = MyWindow()
-    w.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
