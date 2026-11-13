@@ -3,40 +3,29 @@ from datetime import date
 
 from PySide6.QtCore import Qt, QTimer, QTime
 from PySide6.QtGui import QPixmap, QCursor, QGuiApplication, QFont
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QComboBox, QLabel, QMainWindow, QPushButton, \
+from PySide6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, \
     QGridLayout, QSizePolicy
 import sys
+
 from add_product import MyWindow
-
-class DigitalClock(QLabel):
-
-  def __init__(self, parent=None):
-    super().__init__(parent)
-    self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-    self.setFont(QFont("Arial", 24, QFont.Weight.Bold))
-    self.setStyleSheet("color: #7095DC;")
-
-    # Set up a timer to trigger every 1000ms (1 second)
-    self.timer = QTimer(self)
-    self.timer.timeout.connect(self.update_time)
-    self.timer.start(1000)
-
-    # Display the time immediately on startup
-    self.update_time()
-
-  def update_time(self):
-    current_time = QTime.currentTime().toString("hh:mm:ss AP")
-    self.setText(current_time)
+from time_helps import DigitalClock
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("A Place to Weave")
         self.set_title_bar_color(0xDC9570)     #7095DC
-        # self.center_on_cursor_screen()
+        self.center_on_cursor_screen()
         self.setFixedSize(1200, 800)
         self.setStyleSheet("background-color: white")
+        self._first_show = True
         self.init_ui()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._first_show:
+            self.center_on_cursor_screen()
+            self._first_show = False
 
     def init_ui(self):
         grid_layout = QGridLayout(self)
@@ -153,7 +142,7 @@ class MainWindow(QWidget):
         product_add_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         product_add_btn.setStyleSheet("color: #7095DC;")
         product_add_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        product_add_btn.clicked.connect(self.show_add_product)
+        product_add_btn.clicked.connect(show_add_product)
         product_grid.addWidget(product_add_btn, 1, 0)
         product_grid.setRowStretch(1, 1)
 
@@ -195,7 +184,7 @@ class MainWindow(QWidget):
         inventory_add_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         inventory_add_btn.setStyleSheet("color: #7095DC;")
         inventory_add_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        inventory_add_btn.clicked.connect(self.show_add_product)
+        inventory_add_btn.clicked.connect(show_add_product)
         inventory_grid.addWidget(inventory_add_btn, 1, 0)
         inventory_grid.setRowStretch(1, 1)
 
@@ -237,7 +226,7 @@ class MainWindow(QWidget):
         sales_add_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         sales_add_btn.setStyleSheet("color: #7095DC;")
         sales_add_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sales_add_btn.clicked.connect(self.show_add_product)
+        sales_add_btn.clicked.connect(show_add_product)
         sales_grid.addWidget(sales_add_btn, 1, 0)
         sales_grid.setRowStretch(1, 1)
 
@@ -305,27 +294,33 @@ class MainWindow(QWidget):
             target_screen = QGuiApplication.primaryScreen()
 
         # Calculate and apply the center position
-        screen_center = target_screen.availableGeometry().center()
-        window_rect = self.frameGeometry()
-        window_rect.moveCenter(screen_center)
-        self.move(window_rect.topLeft())
+        available_geometry = target_screen.availableGeometry()
+        frame_geometry = self.frameGeometry()
+        center_point = available_geometry.center()
+        frame_geometry.moveCenter(center_point)
+        self.move(frame_geometry.topLeft())
+        # screen_center = target_screen.availableGeometry().center()
+        # window_rect = self.frameGeometry()
+        # window_rect.moveCenter(screen_center)
+        # self.move(window_rect.topLeft())
 
     def set_title_bar_color(self, bgr_color: int):
         if sys.platform == "win32":
             hwnd = int(self.winId())
             # DWMWA_CAPTION_COLOR = 35 (Windows 11 Build 22000+)
-            DWMWA_CAPTION_COLOR = 35
+            dwmwa_caption_color = 35
             color = ctypes.c_int(bgr_color)
-            ctypes.windll.dwmapi.DwmSetWindowAttribute(
+            # type: ignore
+            ctypes.windll.dwmapi.DwmSetWindowAttribute(                      # type: ignore[attr-defined]
                 hwnd,
-                DWMWA_CAPTION_COLOR,
+                dwmwa_caption_color,
                 ctypes.byref(color),
                 ctypes.sizeof(color)
             )
-
-    def show_add_product(self):
-        w = MyWindow()
-        w.show()
+    # @staticmethod
+def show_add_product():
+    w = MyWindow()
+    w.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
