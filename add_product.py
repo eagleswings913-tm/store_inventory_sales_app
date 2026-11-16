@@ -38,14 +38,14 @@ class MyWindow(QMainWindow):
         self.barcode.setObjectName("barcode")
         self.form_layout.addRow(self.barcode_label, self.barcode)
         self.barcode.returnPressed.connect(lambda w=self.barcode: self.on_change(w.text(),"barcode"))
-        self.form_layout.setRowVisible(self.barcode, False)
+        self.form_layout.setRowVisible(self.barcode, True)
 
         # Item Number (yarn)      Brand Name + Item Number (unique)
         self.item_num_label = QLabel("Item Number")
         self.item_num = QLineEdit()
         self.item_num.setObjectName("barcode")
         self.form_layout.addRow(self.item_num_label, self.item_num)
-        self.form_layout.setRowVisible(self.item_num, False)
+        self.form_layout.setRowVisible(self.item_num, True)
 
         # Brand Name (yarn)     DD
         self.brand_name_label = QLabel("Brand Name")
@@ -284,9 +284,28 @@ class MyWindow(QMainWindow):
         category_index = self.category_index.text()
         barcode = self.barcode.text()
         item_num = self.item_num.text()
+        brand_name = self.brand_name_dropdown.currentText()
+        brand_name_index = self.brand_name_index.text()
+        product_name = self.product_name_dropdown.currentText()
+        product_name_index = self.product_name_index.text()
+        discount = self.discount_dropdown.currentText()
+        taxable = self.taxable_dropdown.currentText()
+        sold_by = self.sold_by_dropdown.currentText()
+        unit = self.unit_dropdown.currentText()
+        unit_index = self.unit_index.text()
+        weight_per_unit = self.weight_per_unit.text()
+        yarn_line = self.yarn_line.text()
+        yarn_size = self.yarn_size_dropdown.currentText()
+        yarn_size_index = self.yarn_size_index.text()
+        yarn_type = self.type.text()
+        fiber_type = self.fiber_type_dropdown.currentText()
+        fiber_type_index = self.fiber_type_index.text()
+        color_num = self.color_num.text()
+        color = self.color_dropdown.currentText()
+        color_index = self.color_index.text()
 
         # Process the form data
-        QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}\nbarcode {barcode}\nitem number {item_num}")
+        QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}\nbarcode {barcode}\nitem number {item_num}\nbrand name {brand_name} with index {brand_name_index}\nProduct name {product_name} with index {product_name_index}\nDiscount {discount}\nTaxable {taxable}\nSold By {sold_by}\nUnit {unit} with index {unit_index}\nweight per unit {weight_per_unit}\nyarn line {yarn_line}\nyarn size {yarn_size} with index {yarn_size_index}\ntype {yarn_type}\nfiber type {fiber_type} with index {fiber_type_index}\ncolor number {color_num}\nColor {color} with index {color_index}")
 
     def handle_reset(self):
         for i in range(self.form_layout.count()):

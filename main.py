@@ -70,49 +70,37 @@ class MainWindow(QWidget):
         label1 = QLabel("")
         label1.setStyleSheet("background-color: #e1eaf9; border: 3px solid #b6caef;")
         label1.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        label1.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        label1.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         grid_layout.addWidget(label1, 0, 1)
 
         label2 = QLabel("")
         label2.setStyleSheet("background-color: #e2eaf8; border: 3px solid #b6caef;")
-        label2.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        label2.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         grid_layout.addWidget(label2, 0, 2)
 
         grid_layout.setRowStretch(0, 1)
 
         label3 = QLabel("")
         label3.setStyleSheet("background-color: #e2eaf8; border: 3px solid #b6caef;")
-        label3.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        label3.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         grid_layout.addWidget(label3, 1, 1)
 
         label4 = QLabel("")
         label4.setStyleSheet("background-color: #e2eaf8; border: 3px solid #b6caef;")
-        label4.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        label4.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         grid_layout.addWidget(label4, 1, 2)
 
         grid_layout.setRowStretch(1, 1)
 
-        add_button = QLabel("")
-        add_button.setStyleSheet("background-color: #e2eaf8; border: 3px solid #b6caef;")
-        add_button.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
-        grid_layout.addWidget(add_button, 2, 1)
+        label5 = QLabel("")
+        label5.setStyleSheet("background-color: #e2eaf8; border: 3px solid #b6caef;")
+        label5.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        grid_layout.addWidget(label5, 2, 1)
 
-        edit_button = QLabel("")
-        edit_button.setStyleSheet("background-color: #e2eaf8; border: 3px solid #b6caef;")
-        edit_button.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
-        grid_layout.addWidget(edit_button, 2, 2)
+        label6 = QLabel("")
+        label6.setStyleSheet("background-color: #e2eaf8; border: 3px solid #b6caef;")
+        label6.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        grid_layout.addWidget(label6, 2, 2)
 
         grid_layout.setRowStretch(2, 1)
 
@@ -123,18 +111,14 @@ class MainWindow(QWidget):
         product_container = QWidget()
         product_container.setObjectName("ProductContainer")
         product_container.setStyleSheet("#ProductContainer {background-color: #e1eaf9; border: 3px solid #b6caef;}")
-        product_container.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        product_container.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         product_grid = QGridLayout(product_container)
         product_label = QLabel("Products")
         product_label.setStyleSheet("border: none;")
         product_label.setFont(QFont("Arial", 30, QFont.Weight.Bold))
         product_label.setStyleSheet("color: #7095DC;")
         product_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        product_label.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        product_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         product_grid.addWidget(product_label, 0, 0)
         product_grid.setRowStretch(0, 1)
 
@@ -167,18 +151,14 @@ class MainWindow(QWidget):
         inventory_container = QWidget()
         inventory_container.setObjectName("InventoryContainer")
         inventory_container.setStyleSheet("#InventoryContainer {background-color: #e1eaf9; border: 3px solid #b6caef;}")
-        inventory_container.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        inventory_container.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         inventory_grid = QGridLayout(inventory_container)
         inventory_label = QLabel("Inventory")
         inventory_label.setStyleSheet("border: none;")
         inventory_label.setFont(QFont("Arial", 30, QFont.Weight.Bold))
         inventory_label.setStyleSheet("color: #7095DC;")
         inventory_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        inventory_label.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        inventory_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         inventory_grid.addWidget(inventory_label, 0, 0)
         inventory_grid.setRowStretch(0, 1)
 
@@ -211,18 +191,14 @@ class MainWindow(QWidget):
         sales_container = QWidget()
         sales_container.setObjectName("SalesContainer")
         sales_container.setStyleSheet("#SalesContainer {background-color: #e1eaf9; border: 3px solid #b6caef;}")
-        sales_container.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        sales_container.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sales_grid = QGridLayout(sales_container)
         sales_label = QLabel("Sales")
         sales_label.setStyleSheet("border: none;")
         sales_label.setFont(QFont("Arial", 30, QFont.Weight.Bold))
         sales_label.setStyleSheet("color: #7095DC;")
         sales_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        sales_label.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        sales_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sales_grid.addWidget(sales_label, 0, 0)
         sales_grid.setRowStretch(0, 1)
 
@@ -255,18 +231,14 @@ class MainWindow(QWidget):
         reports_container = QWidget()
         reports_container.setObjectName("ReportsContainer")
         reports_container.setStyleSheet("#ReportsContainer {background-color: #e1eaf9; border: 3px solid #b6caef;}")
-        reports_container.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        reports_container.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         reports_grid = QGridLayout(reports_container)
         reports_label = QLabel("Reports")
         reports_label.setStyleSheet("border: none;")
         reports_label.setFont(QFont("Arial", 30, QFont.Weight.Bold))
         reports_label.setStyleSheet("color: #7095DC;")
         reports_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        reports_label.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        reports_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         reports_grid.addWidget(reports_label, 0, 0)
         reports_grid.setRowStretch(0, 1)
 
