@@ -304,6 +304,19 @@ class MyWindow(QMainWindow):
         color = self.color_dropdown.currentText()
         color_index = self.color_index.text()
 
+        if category == 'yarn':
+            if barcode == '':
+                barcode = f"{brand_name_index}{yarn_size_index}{fiber_type_index}{color_num}"
+                print(barcode)
+            product_id = f"{brand_name} {yarn_size} {yarn_type} {fiber_type} {color}"
+            print(product_id)
+        else:
+            if barcode == '':
+                barcode = f"{brand_name_index}{item_num}{product_name_index}"
+                print(barcode)
+            product_id = f"{brand_name} {item_num} {product_name}"
+            print(product_id)
+
         # Process the form data
         QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}\nbarcode {barcode}\nitem number {item_num}\nbrand name {brand_name} with index {brand_name_index}\nProduct name {product_name} with index {product_name_index}\nDiscount {discount}\nTaxable {taxable}\nSold By {sold_by}\nUnit {unit} with index {unit_index}\nweight per unit {weight_per_unit}\nyarn line {yarn_line}\nyarn size {yarn_size} with index {yarn_size_index}\ntype {yarn_type}\nfiber type {fiber_type} with index {fiber_type_index}\ncolor number {color_num}\nColor {color} with index {color_index}")
 
