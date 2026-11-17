@@ -21,7 +21,7 @@ class MyWindow(QMainWindow):
         self.form_layout.setContentsMargins(0,20,0,20)
 
             # product category - category_dropdown
-        self.category_label = QLabel("Product Category - <span style='color:red;'>Required</span>")
+        self.category_label = QLabel("<b>Product Category</b> - <span style='color:red;'>Required</span>")
         self.category_dropdown = QComboBox()
         self.category_dropdown.setObjectName("category_dropdown")
         self.load_dropdown("category")
@@ -33,7 +33,7 @@ class MyWindow(QMainWindow):
         self.category_index.setVisible(False)
 
         # Barcode                 (unique)
-        self.barcode_label = QLabel("Barcode")
+        self.barcode_label = QLabel("<b>Barcode</b>")
         self.barcode = QLineEdit()
         self.barcode.setObjectName("barcode")
         self.form_layout.addRow(self.barcode_label, self.barcode)
@@ -41,15 +41,26 @@ class MyWindow(QMainWindow):
         self.form_layout.setRowVisible(self.barcode, False)
 
         # Item Number (yarn)      Brand Name + Item Number (unique)
-        self.item_num_label = QLabel("Item Number - <span style='color:red;'>Required</span>")
+        self.item_num_label = QLabel("<b>Item Number</b> - <span style='color:red;'>Required</span>")
         self.item_num = QLineEdit()
         self.item_num.setObjectName("barcode")
         self.form_layout.addRow(self.item_num_label, self.item_num)
         self.item_num.returnPressed.connect(lambda w=self.item_num: self.on_change(w.text(), "item_num"))
         self.form_layout.setRowVisible(self.item_num, False)
 
+        # Sold By (yarn)        DD
+        self.sold_by_label = QLabel("<b>Sold By</b> - <span style='color:red;'>Required</span>")
+        self.sold_by_dropdown = QComboBox()
+        self.sold_by_dropdown.setObjectName("sold_by_dropdown")
+        self.sold_by_dropdown.addItems(["Each", "Weight"])
+        self.sold_by_dropdown.setPlaceholderText("")  # dropdown initially is empty
+        self.sold_by_dropdown.setCurrentIndex(-1)
+        self.form_layout.addRow(self.sold_by_label, self.sold_by_dropdown)
+        self.sold_by_dropdown.currentTextChanged.connect(lambda text: self.on_change(text,'sold_by_dropdown'))
+        self.form_layout.setRowVisible(self.sold_by_dropdown, False)
+
         # Brand Name (yarn)     DD
-        self.brand_name_label = QLabel("Brand Name - <span style='color:red;'>Required</span>")
+        self.brand_name_label = QLabel("<b>Brand Name</b> - <span style='color:red;'>Required</span>")
         self.brand_name_dropdown = QComboBox()
         self.brand_name_dropdown.setObjectName("brand_name_dropdown")
         self.load_dropdown("brand_name")
@@ -62,7 +73,7 @@ class MyWindow(QMainWindow):
         self.brand_name_index.setVisible(False)
 
         # Product Name          DD
-        self.product_name_label = QLabel("Product Name - <span style='color:red;'>Required</span>")
+        self.product_name_label = QLabel("<b>Product Name</b> - <span style='color:red;'>Required</span>")
         self.product_name_dropdown = QComboBox()
         self.product_name_dropdown.setObjectName("product_name_dropdown")
         self.load_dropdown("product_name")
@@ -75,7 +86,7 @@ class MyWindow(QMainWindow):
         self.product_name_index.setVisible(False)
 
         # Discount (yarn)       Boolean
-        self.discount_label = QLabel("Discount? - <span style='color:red;'>Required</span>")
+        self.discount_label = QLabel("<b>Discount?</b> - <span style='color:red;'>Required</span>")
         self.discount_dropdown = QComboBox()
         self.discount_dropdown.setObjectName("discount_dropdown")
         self.discount_dropdown.addItems(["True", "False"])
@@ -86,7 +97,7 @@ class MyWindow(QMainWindow):
         self.form_layout.setRowVisible(self.discount_dropdown, False)
 
         # Taxable (yarn)        Boolean
-        self.taxable_label = QLabel("Taxable? - <span style='color:red;'>Required</span>")
+        self.taxable_label = QLabel("<b>Taxable?</b> - <span style='color:red;'>Required</span>")
         self.taxable_dropdown = QComboBox()
         self.taxable_dropdown.setObjectName("taxable_dropdown")
         self.taxable_dropdown.addItems(["True", "False"])
@@ -96,46 +107,8 @@ class MyWindow(QMainWindow):
         self.taxable_dropdown.currentTextChanged.connect(lambda text: self.on_change(text,'taxable_dropdown'))
         self.form_layout.setRowVisible(self.taxable_dropdown, False)
 
-        # Sold By (yarn)        DD
-        self.sold_by_label = QLabel("Sold By - <span style='color:red;'>Required</span>")
-        self.sold_by_dropdown = QComboBox()
-        self.sold_by_dropdown.setObjectName("sold_by_dropdown")
-        self.sold_by_dropdown.addItems(["Each", "Weight"])
-        self.sold_by_dropdown.setPlaceholderText("")  # dropdown initially is empty
-        self.sold_by_dropdown.setCurrentIndex(-1)
-        self.form_layout.addRow(self.sold_by_label, self.sold_by_dropdown)
-        self.sold_by_dropdown.currentTextChanged.connect(lambda text: self.on_change(text,'sold_by_dropdown'))
-        self.form_layout.setRowVisible(self.sold_by_dropdown, False)
-
-        # Unit (yarn - each)    DD
-        self.unit_label = QLabel("Unit - <span style='color:red;'>Required</span>")
-        self.unit_dropdown = QComboBox()
-        self.unit_dropdown.setObjectName("unit_dropdown")
-        self.load_dropdown("unit")
-        self.form_layout.addRow(self.unit_label, self.unit_dropdown)
-        self.form_layout.setRowVisible(self.unit_dropdown, False)
-
-        self.unit_index = QLineEdit()
-        self.unit_index.setObjectName("unit_index")
-        self.form_layout.addRow(self.unit_index)
-        self.unit_index.setVisible(False)
-
-        # Weight of Unit (yarn - each)
-        self.weight_per_unit_label = QLabel("Weight Per Unit - <span style='color:red;'>Required</span>")
-        self.weight_per_unit = QLineEdit()
-        self.weight_per_unit.setObjectName("weight_per_unit")
-        self.form_layout.addRow(self.weight_per_unit_label, self.weight_per_unit)
-        self.form_layout.setRowVisible(self.weight_per_unit, False)
-
-        #  Line (yarn - each - weight)
-        self.yarn_line_label = QLabel("Yarn Line")
-        self.yarn_line = QLineEdit()
-        self.yarn_line.setObjectName("yarn_line")
-        self.form_layout.addRow(self.yarn_line_label, self.yarn_line)
-        self.form_layout.setRowVisible(self.yarn_line, False)
-
         # Yarn Size (yarn - each - weight)      DD
-        self.yarn_size_label = QLabel("Yarn Size - <span style='color:red;'>Required</span>")
+        self.yarn_size_label = QLabel("<b>Yarn Size</b> - <span style='color:red;'>Required</span>")
         self.yarn_size_dropdown = QComboBox()
         self.yarn_size_dropdown.setObjectName("yarn_size_dropdown")
         self.load_dropdown("yarn_size")
@@ -147,15 +120,8 @@ class MyWindow(QMainWindow):
         self.form_layout.addRow(self.yarn_size_index)
         self.yarn_size_index.setVisible(False)
 
-        # Type (yarn - each - weight)
-        self.type_label = QLabel("Yarn Type (mercanized, perle, etc")
-        self.type = QLineEdit()
-        self.type.setObjectName("type")
-        self.form_layout.addRow(self.type_label, self.type)
-        self.form_layout.setRowVisible(self.type, False)
-
         # Fiber Type (yarn - each - weight)     DD
-        self.fiber_type_label = QLabel("Fiber Type - <span style='color:red;'>Required</span>")
+        self.fiber_type_label = QLabel("<b>Fiber Type</b> - <span style='color:red;'>Required</span>")
         self.fiber_type_dropdown = QComboBox()
         self.fiber_type_dropdown.setObjectName("fiber_type_dropdown")
         self.load_dropdown("fiber_type")
@@ -168,14 +134,14 @@ class MyWindow(QMainWindow):
         self.fiber_type_index.setVisible(False)
 
         # Color Number (yarn - each - weight)
-        self.color_num_label = QLabel("Color Number - <span style='color:red;'>Required</span>")
+        self.color_num_label = QLabel("<b>Color Number</b> - <span style='color:red;'>Required</span>")
         self.color_num = QLineEdit()
         self.color_num.setObjectName("color_num")
         self.form_layout.addRow(self.color_num_label, self.color_num)
         self.form_layout.setRowVisible(self.color_num, False)
 
         # Color (yarn - each - weight)
-        self.color_label = QLabel("Yarn Color - <span style='color:red;'>Required</span>")
+        self.color_label = QLabel("<b>Yarn Color</b> - <span style='color:red;'>Required</span>")
         self.color_dropdown = QComboBox()
         self.color_dropdown.setObjectName("color_dropdown")
         self.load_dropdown("color")
@@ -186,6 +152,40 @@ class MyWindow(QMainWindow):
         self.color_index.setObjectName("color_index")
         self.form_layout.addRow(self.color_index)
         self.color_index.setVisible(False)
+
+        #  Line (yarn - each - weight)
+        self.yarn_line_label = QLabel("<b>Yarn Line</b>")
+        self.yarn_line = QLineEdit()
+        self.yarn_line.setObjectName("yarn_line")
+        self.form_layout.addRow(self.yarn_line_label, self.yarn_line)
+        self.form_layout.setRowVisible(self.yarn_line, False)
+
+        # Type (yarn - each - weight)
+        self.type_label = QLabel("<b>Yarn Type</b> (mercanized, perle, etc")
+        self.type = QLineEdit()
+        self.type.setObjectName("type")
+        self.form_layout.addRow(self.type_label, self.type)
+        self.form_layout.setRowVisible(self.type, False)
+
+        # Unit (yarn - each)    DD
+        self.unit_label = QLabel("<b>Unit</b> - <span style='color:red;'>Required</span>")
+        self.unit_dropdown = QComboBox()
+        self.unit_dropdown.setObjectName("unit_dropdown")
+        self.load_dropdown("unit")
+        self.form_layout.addRow(self.unit_label, self.unit_dropdown)
+        self.form_layout.setRowVisible(self.unit_dropdown, False)
+
+        self.unit_index = QLineEdit()
+        self.unit_index.setObjectName("unit_index")
+        self.form_layout.addRow(self.unit_index)
+        self.unit_index.setVisible(False)
+
+        # Weight of Unit (yarn - each)
+        self.weight_per_unit_label = QLabel("<b>Weight Per Unit</b> - <span style='color:red;'>Required</span>")
+        self.weight_per_unit = QLineEdit()
+        self.weight_per_unit.setObjectName("weight_per_unit")
+        self.form_layout.addRow(self.weight_per_unit_label, self.weight_per_unit)
+        self.form_layout.setRowVisible(self.weight_per_unit, False)
 
         self.main_layout.addLayout(self.form_layout)
         self.main_layout.addStretch()
@@ -281,6 +281,7 @@ class MyWindow(QMainWindow):
             else:
                 if self.question_box("Does the product have an Item number? (y or n) "):
                     self.form_layout.setRowVisible(self.item_num, True)
+                    self.item_num.setFocus()
                 else:
                     list_name = 'item_num'
         if list_name == "item_num":
