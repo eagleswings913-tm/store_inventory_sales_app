@@ -1,4 +1,4 @@
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QTimer
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QComboBox, QLabel, QInputDialog, QMessageBox, \
     QLineEdit, QPushButton, QFormLayout, QMainWindow, QHBoxLayout
 
@@ -11,6 +11,7 @@ class MyWindow(QMainWindow):
         super().__init__()
         set_title_bar_color(self, 0xDC9570)  # 7095DC
         center_on_cursor_screen(self)
+        self.reset = False
         self.init_ui()
 
     def init_ui(self):
@@ -44,7 +45,7 @@ class MyWindow(QMainWindow):
         # Item Number (yarn)      Brand Name + Item Number (unique)
         self.item_num_label = QLabel("<b>Item Number</b> - <span style='color:red;'>Required</span>")
         self.item_num = QLineEdit()
-        self.item_num.setObjectName("barcode")
+        self.item_num.setObjectName("item_num")
         self.form_layout.addRow(self.item_num_label, self.item_num)
         self.item_num.returnPressed.connect(lambda w=self.item_num: self.on_change(w.text(), "item_num"))
         self.form_layout.setRowVisible(self.item_num, False)
@@ -236,6 +237,8 @@ class MyWindow(QMainWindow):
         # executes when text changes in a dropdown widget
     def on_change(self, selected_text, widget_name):
         # print(selected_text, widget_name)
+        if self.reset:
+            return
         if 'dropdown' in widget_name:
             list_name = widget_name.rsplit('_',1)[0].lower()            # extract fieldname from widget name
         else:
@@ -382,19 +385,27 @@ class MyWindow(QMainWindow):
         QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}\nbarcode {barcode}\nitem number {item_num}\nbrand name {brand_name} with index {brand_name_index}\nProduct name {product_name} with index {product_name_index}\nDiscount {discount}\nTaxable {taxable}\nSold By {sold_by}\nUnit {unit} with index {unit_index}\nweight per unit {weight_per_unit}\nyarn line {yarn_line}\nyarn size {yarn_size} with index {yarn_size_index}\ntype {yarn_type}\nfiber type {fiber_type} with index {fiber_type_index}\ncolor number {color_num}\nColor {color} with index {color_index}")
 
     def handle_reset(self):
+        self.reset = True
         for i in range(self.form_layout.count()):
             item = self.form_layout.itemAt(i)
             if item is not None:
                 widget = item.widget()
                 if widget is not None:
-                    print(widget.objectName())
+                    # print(widget.objectName())
                     widget_name = widget.objectName()
                     if isinstance(widget, QComboBox):
                         getattr(self, widget_name).setPlaceholderText("")  # dropdown initially is empty
                         getattr(self, widget_name).setCurrentIndex(-1)
+                        if widget_name != "category_dropdown":
+                            target_widget = getattr(self, widget_name)
+                            self.form_layout.setRowVisible(target_widget, False)
                     elif isinstance(widget, QLineEdit):
                         getattr(self, widget_name).setText("")
-
+                        target_widget = getattr(self, widget_name)
+                        self.form_layout.setRowVisible(target_widget, False)
+                        getattr(self, widget_name).setVisible(False)
+        self.reset = False
+        QTimer.singleShot(0, self.adjustSize)
         QMessageBox.information(self, "Reset", f"Reset the form")
 
 
