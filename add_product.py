@@ -1,4 +1,4 @@
-
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QComboBox, QLabel, QInputDialog, QMessageBox, \
     QLineEdit, QPushButton, QFormLayout, QMainWindow, QHBoxLayout
 
@@ -6,6 +6,7 @@ import dropdown_menus
 from window_functions import set_title_bar_color,center_on_cursor_screen
 
 class MyWindow(QMainWindow):
+    form_submitted = Signal(dict)
     def __init__(self):
         super().__init__()
         set_title_bar_color(self, 0xDC9570)  # 7095DC
@@ -371,6 +372,11 @@ class MyWindow(QMainWindow):
                 print(barcode)
             product_id = f"{brand_name} {item_num} {product_name}"
             print(product_id)
+        data = {
+            "barcode": barcode,
+            "product_id": product_id,
+        }
+        self.form_submitted.emit(data)
 
         # Process the form data
         QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}\nbarcode {barcode}\nitem number {item_num}\nbrand name {brand_name} with index {brand_name_index}\nProduct name {product_name} with index {product_name_index}\nDiscount {discount}\nTaxable {taxable}\nSold By {sold_by}\nUnit {unit} with index {unit_index}\nweight per unit {weight_per_unit}\nyarn line {yarn_line}\nyarn size {yarn_size} with index {yarn_size_index}\ntype {yarn_type}\nfiber type {fiber_type} with index {fiber_type_index}\ncolor number {color_num}\nColor {color} with index {color_index}")
@@ -381,7 +387,7 @@ class MyWindow(QMainWindow):
             if item is not None:
                 widget = item.widget()
                 if widget is not None:
-                    # print(widget.objectName())
+                    print(widget.objectName())
                     widget_name = widget.objectName()
                     if isinstance(widget, QComboBox):
                         getattr(self, widget_name).setPlaceholderText("")  # dropdown initially is empty

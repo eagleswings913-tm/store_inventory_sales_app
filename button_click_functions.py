@@ -3,7 +3,11 @@ from add_product import MyWindow
 
 def show_add_product():
     w = MyWindow()
+    w.form_submitted.connect(process_form_data)
     w.show()
+
+def process_form_data(data):
+    print("Received from window:", data)
 
 def edit_product():
     print("Edit product...")
