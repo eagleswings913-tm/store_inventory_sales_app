@@ -1,5 +1,5 @@
 from PySide6.QtCore import Signal, QTimer, Qt
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QCloseEvent
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QComboBox, QLabel, QInputDialog, QMessageBox, \
     QLineEdit, QPushButton, QFormLayout, QMainWindow, QHBoxLayout
 
@@ -357,7 +357,7 @@ class MyWindow(QMainWindow):
             return False
 
     def is_empty(self, field_name, field_value):
-        print(f"category = {self.category_dropdown.currentText()} | sold by = {self.sold_by_dropdown.currentText()} | field_name = {field_name} | field_value = {field_value}")
+        # print(f"category = {self.category_dropdown.currentText()} | sold by = {self.sold_by_dropdown.currentText()} | field_name = {field_name} | field_value = {field_value}")
         if self.category_dropdown.currentText() != 'yarn' and field_name in self.PRODUCT_REQUIRED_FIELDS:
             if field_name == 'barcode' or field_name == 'item_num':
                 if self.barcode.text() == "" and self.item_num.text() == "":
@@ -380,7 +380,7 @@ class MyWindow(QMainWindow):
                 self.message_label.setText(f"{field_name} is a required field")
                 self.message_label.setVisible(True)
                 return False
-        elif field_name == 'sold_by' and self.sold_by_dropdown.currentText() == '':
+        elif self.category_dropdown.currentText() == 'yarn' and field_name == 'sold_by' and self.sold_by_dropdown.currentText() == '':
             self.message_label.setText(f"{field_name} is a required field")
             self.message_label.setVisible(True)
             return False
@@ -413,6 +413,7 @@ class MyWindow(QMainWindow):
         return True
 
     def handle_submit(self):
+        form_values = {}
         if self.validate_fields():
             for i in range(self.form_layout.count()):
                 item = self.form_layout.itemAt(i)
@@ -424,54 +425,69 @@ class MyWindow(QMainWindow):
                         # print(f"widget = {widget_name}")
                         if isinstance(widget, QComboBox):
                             widget_value = getattr(self, widget_name).currentText()
+                            field_name = widget_name.rsplit('_', 1)[0].lower()
+                            form_values[field_name] = widget_value
                             # print(f"widget = {widget_name} | widget_value = {widget_value}")
                         elif isinstance(widget, QLineEdit):
                             widget_value = getattr(self, widget_name).text()
+                            form_values[widget_name] = widget_value
                             # print(f"widget = {widget_name} | widget_value = {widget_value}")
-            category = self.category_dropdown.currentText()
-            category_index = self.category_index.text()
-            barcode = self.barcode.text()
-            item_num = self.item_num.text()
-            brand_name = self.brand_name_dropdown.currentText()
-            brand_name_index = self.brand_name_index.text()
-            product_name = self.product_name_dropdown.currentText()
-            product_name_index = self.product_name_index.text()
-            discount = self.discount_dropdown.currentText()
-            taxable = self.taxable_dropdown.currentText()
-            sold_by = self.sold_by_dropdown.currentText()
-            unit = self.unit_dropdown.currentText()
-            unit_index = self.unit_index.text()
-            weight_per_unit = self.weight_per_unit.text()
-            yarn_line = self.yarn_line.text()
-            yarn_size = self.yarn_size_dropdown.currentText()
-            yarn_size_index = self.yarn_size_index.text()
-            yarn_type = self.type.text()
-            fiber_type = self.fiber_type_dropdown.currentText()
-            fiber_type_index = self.fiber_type_index.text()
-            color_num = self.color_num.text()
-            color = self.color_dropdown.currentText()
-            color_index = self.color_index.text()
+            # category = self.category_dropdown.currentText()
+            # category_index = self.category_index.text()
+            # barcode = self.barcode.text()
+            # item_num = self.item_num.text()
+            # brand_name = self.brand_name_dropdown.currentText()
+            # brand_name_index = self.brand_name_index.text()
+            # product_name = self.product_name_dropdown.currentText()
+            # product_name_index = self.product_name_index.text()
+            # discount = self.discount_dropdown.currentText()
+            # taxable = self.taxable_dropdown.currentText()
+            # sold_by = self.sold_by_dropdown.currentText()
+            # unit = self.unit_dropdown.currentText()
+            # unit_index = self.unit_index.text()
+            # weight_per_unit = self.weight_per_unit.text()
+            # yarn_line = self.yarn_line.text()
+            # yarn_size = self.yarn_size_dropdown.currentText()
+            # yarn_size_index = self.yarn_size_index.text()
+            # yarn_type = self.type.text()
+            # fiber_type = self.fiber_type_dropdown.currentText()
+            # fiber_type_index = self.fiber_type_index.text()
+            # color_num = self.color_num.text()
+            # color = self.color_dropdown.currentText()
+            # color_index = self.color_index.text()
 
-            if category == 'yarn':
-                if barcode == '':
-                    barcode = f"{brand_name_index}{yarn_size_index}{fiber_type_index}{color_num}"
-                    print(barcode)
-                product_id = f"{brand_name} {yarn_size} {yarn_type} {fiber_type} {color}"
-                print(product_id)
+            if form_values['category'] == 'yarn':
+                if form_values['barcode'] == '':
+                    form_values['barcode'] = f"{form_values['brand_name_index']}{form_values['yarn_size_index']}{form_values['fiber_type_index']}{form_values['color_num}']}"
+                    print(form_values['barcode'])
+                form_values['product_id'] = f"{form_values['brand_name']} {form_values['yarn_size']} {form_values['yarn_type']} {form_values['fiber_type']} {form_values['color}']}"
+                # print(form_values['product_id'])
             else:
-                if barcode == '':
-                    barcode = f"{brand_name_index}{item_num}{product_name_index}"
-                    print(barcode)
-                product_id = f"{brand_name} {item_num} {product_name}"
-                print(product_id)
-            data = {
-                "barcode": barcode,
-                "product_id": product_id,
-            }
-            self.form_submitted.emit(data)
+                if form_values['barcode'] == '':
+                    form_values['barcode'] = f"{form_values['brand_name_index']}{form_values['item_num']}{form_values['product_name_index']}"
+                    print(form_values['barcode'])
+                form_values['product_id'] = f"{form_values['brand_name']} {form_values['item_num']} {form_values['product_name']}"
+                # print(form_values['product_id'])
+
+            self.close()
+            self.form_submitted.emit(form_values)
 
             # Process the form data
-            QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}\nbarcode {barcode}\nitem number {item_num}\nbrand name {brand_name} with index {brand_name_index}\nProduct name {product_name} with index {product_name_index}\nDiscount {discount}\nTaxable {taxable}\nSold By {sold_by}\nUnit {unit} with index {unit_index}\nweight per unit {weight_per_unit}\nyarn line {yarn_line}\nyarn size {yarn_size} with index {yarn_size_index}\ntype {yarn_type}\nfiber type {fiber_type} with index {fiber_type_index}\ncolor number {color_num}\nColor {color} with index {color_index}")
+            # QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}\nbarcode {barcode}\nitem number {item_num}\nbrand name {brand_name} with index {brand_name_index}\nProduct name {product_name} with index {product_name_index}\nDiscount {discount}\nTaxable {taxable}\nSold By {sold_by}\nUnit {unit} with index {unit_index}\nweight per unit {weight_per_unit}\nyarn line {yarn_line}\nyarn size {yarn_size} with index {yarn_size_index}\ntype {yarn_type}\nfiber type {fiber_type} with index {fiber_type_index}\ncolor number {color_num}\nColor {color} with index {color_index}")
+
+    # def closeEvent(self, event):
+    #     reply = QMessageBox.question(
+    #         self,
+    #         "Confirm Exit",
+    #         "Are you sure you want to close?",
+    #         QMessageBox.Yes | QMessageBox.No,
+    #         QMessageBox.No,
+    #     )
+    #
+    #     if reply == QMessageBox.Yes:
+    #         event.accept()  # Allows the window to close
+    #     else:
+    #         event.ignore()  # Cancels closing
 
     def handle_reset(self):
         self.reset = True
