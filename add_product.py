@@ -1,5 +1,5 @@
 from PySide6.QtCore import Signal, QTimer, Qt
-from PySide6.QtGui import QFont, QCloseEvent
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QComboBox, QLabel, QInputDialog, QMessageBox, \
     QLineEdit, QPushButton, QFormLayout, QMainWindow, QHBoxLayout
 
@@ -8,6 +8,7 @@ from window_functions import set_title_bar_color,center_on_cursor_screen
 
 class MyWindow(QMainWindow):
     form_submitted = Signal(dict)
+    request_close = Signal()
     def __init__(self):
         super().__init__()
         set_title_bar_color(self, 0xDC9570)  # 7095DC
@@ -427,7 +428,7 @@ class MyWindow(QMainWindow):
                             widget_value = getattr(self, widget_name).currentText()
                             field_name = widget_name.rsplit('_', 1)[0].lower()
                             form_values[field_name] = widget_value
-                            # print(f"widget = {widget_name} | widget_value = {widget_value}")
+                            # print(f"widget = {field_name} | widget_value = {widget_value}")
                         elif isinstance(widget, QLineEdit):
                             widget_value = getattr(self, widget_name).text()
                             form_values[widget_name] = widget_value
@@ -449,7 +450,7 @@ class MyWindow(QMainWindow):
             # yarn_line = self.yarn_line.text()
             # yarn_size = self.yarn_size_dropdown.currentText()
             # yarn_size_index = self.yarn_size_index.text()
-            # yarn_type = self.type.text()
+            # type = self.type.text()
             # fiber_type = self.fiber_type_dropdown.currentText()
             # fiber_type_index = self.fiber_type_index.text()
             # color_num = self.color_num.text()
@@ -458,36 +459,29 @@ class MyWindow(QMainWindow):
 
             if form_values['category'] == 'yarn':
                 if form_values['barcode'] == '':
-                    form_values['barcode'] = f"{form_values['brand_name_index']}{form_values['yarn_size_index']}{form_values['fiber_type_index']}{form_values['color_num}']}"
-                    print(form_values['barcode'])
-                form_values['product_id'] = f"{form_values['brand_name']} {form_values['yarn_size']} {form_values['yarn_type']} {form_values['fiber_type']} {form_values['color}']}"
+                    form_values['barcode'] = f"{form_values['brand_name_index']}{form_values['yarn_size_index']}{form_values['fiber_type_index']}{form_values['color_num']}"
+                    # print(form_values['barcode'])
+                form_values['product_id'] = f"{form_values['brand_name']} {form_values['yarn_size']} {form_values['type']} {form_values['fiber_type']} {form_values['color']}"
                 # print(form_values['product_id'])
             else:
                 if form_values['barcode'] == '':
                     form_values['barcode'] = f"{form_values['brand_name_index']}{form_values['item_num']}{form_values['product_name_index']}"
-                    print(form_values['barcode'])
+                    # print(form_values['barcode'])
                 form_values['product_id'] = f"{form_values['brand_name']} {form_values['item_num']} {form_values['product_name']}"
                 # print(form_values['product_id'])
 
-            self.close()
             self.form_submitted.emit(form_values)
 
             # Process the form data
-            # QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}\nbarcode {barcode}\nitem number {item_num}\nbrand name {brand_name} with index {brand_name_index}\nProduct name {product_name} with index {product_name_index}\nDiscount {discount}\nTaxable {taxable}\nSold By {sold_by}\nUnit {unit} with index {unit_index}\nweight per unit {weight_per_unit}\nyarn line {yarn_line}\nyarn size {yarn_size} with index {yarn_size_index}\ntype {yarn_type}\nfiber type {fiber_type} with index {fiber_type_index}\ncolor number {color_num}\nColor {color} with index {color_index}")
+            # QMessageBox.information(self, "Submitted", f"Category {category} with Index {category_index}\nbarcode {barcode}\nitem number {item_num}\nbrand name {brand_name} with index {brand_name_index}\nProduct name {product_name} with index {product_name_index}\nDiscount {discount}\nTaxable {taxable}\nSold By {sold_by}\nUnit {unit} with index {unit_index}\nweight per unit {weight_per_unit}\nyarn line {yarn_line}\nyarn size {yarn_size} with index {yarn_size_index}\ntype {type}\nfiber type {fiber_type} with index {fiber_type_index}\ncolor number {color_num}\nColor {color} with index {color_index}")
 
-    # def closeEvent(self, event):
-    #     reply = QMessageBox.question(
-    #         self,
-    #         "Confirm Exit",
-    #         "Are you sure you want to close?",
-    #         QMessageBox.Yes | QMessageBox.No,
-    #         QMessageBox.No,
-    #     )
-    #
-    #     if reply == QMessageBox.Yes:
-    #         event.accept()  # Allows the window to close
-    #     else:
-    #         event.ignore()  # Cancels closing
+    def continue_add(self, flag):
+        if flag:
+            if self.question_box("Do you want to add another product?"):
+                self.handle_reset()
+            else:
+                print("Close product form!")
+                self.request_close.emit()
 
     def handle_reset(self):
         self.reset = True
@@ -513,10 +507,6 @@ class MyWindow(QMainWindow):
         QTimer.singleShot(0, self.adjustSize)
         QMessageBox.information(self, "Reset", f"Reset the form")
 
-
     def handle_cancel(self):
         QMessageBox.information(self, "Cancel", f"Canceled, Return to main window")
-        self.close()
-
-    def closeEvent(self, event):
-        event.accept()
+        self.request_close.emit()

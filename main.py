@@ -8,7 +8,25 @@ import sys
 
 from time_helps import DigitalClock
 from window_functions import set_title_bar_color, center_on_cursor_screen
-from button_click_functions import show_add_product, edit_product, view_product, add_inventory, edit_inventory, view_inventory, add_sale, edit_sale, view_sale, reports
+from button_click_functions import edit_product, view_product, add_inventory, edit_inventory, view_inventory, add_sale, edit_sale, view_sale, reports
+
+from add_product import MyWindow
+
+# def handle_focus_change(qwindow):
+#     # qwindow is None when the user clicks outside your entire application
+#     if qwindow is None:
+#         # print("App lost focus (user switched to another program)")
+#         return
+#
+#     # Get the actual QWidget/QMainWindow instance that is now active
+#     active_widget = QApplication.activeWindow()
+#
+#     if active_widget:
+#         print(f"Switched to: {active_widget.windowTitle()}")
+#
+#         # Call a custom method if the window defines one
+#         if hasattr(active_widget, "on_focused"):
+#             active_widget.on_focused()
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -19,6 +37,7 @@ class MainWindow(QWidget):
         self.setFixedSize(1200, 800)
         self.setStyleSheet("background-color: white")
         self._first_show = True
+        self.secondary_window = None
         self.init_ui()
 
     def showEvent(self, event):
@@ -126,7 +145,7 @@ class MainWindow(QWidget):
         product_add_btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         product_add_btn.setStyleSheet("color: #7095DC;")
         product_add_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        product_add_btn.clicked.connect(show_add_product)
+        product_add_btn.clicked.connect(self.open_window)
         product_grid.addWidget(product_add_btn, 1, 0)
         product_grid.setRowStretch(1, 1)
 
@@ -252,19 +271,25 @@ class MainWindow(QWidget):
 
         grid_layout.addWidget(reports_container, 1, 2)
 
-        # if grid_layout:
-        #     for row in range(grid_layout.rowCount()):
-        #         for col in range(grid_layout.columnCount()):
-        #             item = grid_layout.itemAtPosition(row, col)
-        #             if item is not None and item.widget() is not None:
-        #                 size = item.widget().size()
-        #                 print(
-        #                     f"Widget at ({row}, {col}) -> Width: {size.width()}, Height:"
-        #                     f" {size.height()}"
-        #                 )
+    def open_window(self):
+        self.secondary_window = MyWindow()
+        self.secondary_window.form_submitted.connect(self.process_form_data)
+        self.secondary_window.request_close.connect(self.close_window)
+        self.secondary_window.show()
+
+    def close_window(self):
+        if self.secondary_window is not None:
+            self.secondary_window.close()
+
+    def process_form_data(self, data):
+        print("Process form data")
+        print(data)
+        self.secondary_window.continue_add('yes')
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    # app.focusWindowChanged.connect(handle_focus_change)
+
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
