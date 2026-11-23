@@ -3,7 +3,7 @@ from datetime import date
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, \
-    QGridLayout, QSizePolicy
+    QGridLayout, QSizePolicy, QMessageBox
 import sys
 
 from time_helps import DigitalClock
@@ -11,6 +11,7 @@ from window_functions import set_title_bar_color, center_on_cursor_screen
 from button_click_functions import edit_product, view_product, add_inventory, edit_inventory, view_inventory, add_sale, edit_sale, view_sale, reports
 
 from add_product import MyWindow
+from products import Product
 
 # def handle_focus_change(qwindow):
 #     # qwindow is None when the user clicks outside your entire application
@@ -282,9 +283,31 @@ class MainWindow(QWidget):
             self.secondary_window.close()
 
     def process_form_data(self, data):
+        Product.init_db()
         print("Process form data")
         print(data)
-        self.secondary_window.continue_add('yes')
+        # check if product already exists in the database table
+        # if not, create object from class Product and save to database
+        result = Product.search_product(data["barcode"])
+        if len(result) == 0:
+            new_product = Product(data)
+            new_product.save()
+            self.secondary_window.continue_add(True)
+        else:
+            # else show message and return to product form window
+            duplicate_product = result[0][1]
+            button = QMessageBox.information(
+                self,
+                "Error",
+                f"Product '{duplicate_product}' with barcode {data["barcode"]} already exists",
+                buttons=QMessageBox.StandardButton.Ok,
+                defaultButton=QMessageBox.StandardButton.Ok,
+            )
+
+            if button == QMessageBox.StandardButton.Ok:
+                print("User acknowledged the message")
+            self.secondary_window.continue_add(False)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

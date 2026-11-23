@@ -482,6 +482,8 @@ class MyWindow(QMainWindow):
             else:
                 print("Close product form!")
                 self.request_close.emit()
+        else:
+            print("correct product")
 
     def handle_reset(self):
         self.reset = True
