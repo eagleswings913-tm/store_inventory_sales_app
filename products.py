@@ -77,8 +77,17 @@ class Product:
             self.id = cursor.lastrowid
             conn.commit()
 
+    def update(self,db_path: str = "aplacetoweave.db"):
+        with sqlite3.connect(db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                    "UPDATE products SET barcode=?,brand_name=?,category=?,color=?,color_num=?,discount=?,fiber_type=?,item_num=?,product_id=?,product_name=?,sold_by=?,taxable=?,type=?,unit=?,weight_per_unit=?,yarn_line=?,yarn_size=?,discontinued=?,in_inventory=? WHERE id=?",
+                    (self.barcode, self.brand_name, self.category, self.color, self.color_num, self.discount, self.fiber_type, self.item_num, self.product_id, self.product_name,self.sold_by,self.taxable,self.type,self.unit,self.weight_per_unit,self.yarn_line,self.yarn_size,self.discontinued,self.in_inventory,self.id)
+                )
+            conn.commit()
+
     @classmethod
-    def search_product(self, barcode, db_path: str = "aplacetoweave.db"):
+    def search_product(cls, barcode, db_path: str = "aplacetoweave.db"):
         with sqlite3.connect(db_path) as conn:
             cursor = conn.cursor()
             query = "SELECT id, product_id FROM products WHERE barcode LIKE ?"
@@ -86,4 +95,32 @@ class Product:
             results = cursor.fetchall()
             return results
 
+    @classmethod
+    def get_by_id(cls, product_id: int, db_path: str = "aplacetoweave.db"):
+        """Read a single product by ID."""
+        with sqlite3.connect(db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT id,barcode,brand_name,category,color,color_num,discount,fiber_type,item_num,product_id,product_name,sold_by,taxable,type,unit,weight_per_unit,yarn_line,yarn_size,discontinued,in_inventory FROM products WHERE id = ?", (product_id,))
+            row = cursor.fetchone()
+            if row:
+                return cls(row)
+        return None
 
+    @classmethod
+    def get_all(cls, db_path: str = "aplacetoweave.db"):
+        """Read all products from the database."""
+        with sqlite3.connect(db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT id,barcode,brand_name,category,color,color_num,discount,fiber_type,item_num,product_id,product_name,sold_by,taxable,type,unit,weight_per_unit,yarn_line,yarn_size,discontinued,in_inventory FROM products")
+            rows = cursor.fetchall()
+            return [cls(r) for r in rows]
+
+    @staticmethod
+    def delete(product_id, db_path: str = "aplacetoweve.db"):
+        """Delete the product from the database."""
+        if id is not None:
+            with sqlite3.connect(db_path) as conn:
+                conn.execute("DELETE FROM products WHERE id = ?", (product_id,))
+                conn.commit()
+            return True
+        return False
